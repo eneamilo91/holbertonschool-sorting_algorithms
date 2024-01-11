@@ -1,67 +1,44 @@
-#include"sort.h"
+#include "sort.h"
+
 /**
  * swap_nodes - Swaps two nodes in a doubly linked list
- * @list: Double pointer to the head of the doubly linked list
- * @node1: First node to be swapped
- * @node2: Second node to be swapped
- */
-
-void swap_nodes(listint_t **list, listint_t *node1, listint_t *node2)
+ * @list: Double pointer to the head of the doubly linked list.
+ * @node: Node to swap with its previous node.
+*/
+void swap_nodes(listint_t **list, listint_t *node)
 {
-
-	listint_t *prev_node1 = node1->prev;
-	listint_t *next_node2 = node2->next;
-
-	if (prev_node1 != NULL)
-		prev_node1->next = node2;
+	node->prev->next = node->next;
+	if (node->next != NULL)
+		node->next->prev = node->prev;
+	node->next = node->prev;
+	node->prev = node->prev->prev;
+	node->next->prev = node;
+	if (node->prev != NULL)
+		node->prev->next = node;
 	else
-		*list = node2;
-
-	if (next_node2 != NULL)
-		next_node2->prev = node1;
-
-	node2->prev = prev_node1;
-	node1->next = next_node2;
-	node2->next = node1;
-	node1->prev = node2;
-}
-
-
-	if (node1->prev)
-		node1->prev->next = node2;
-	if (node2->next)
-		node2->next->prev = node1;
-
-	node1->next = node2->next;
-	node2->prev = node1->prev;
-
-	node2->next = node1;
-	node1->prev = node2;
-
-	if (node2->prev == NULL)
-		*list = node2;
+		*list = node;
 }
 
 /**
  * insertion_sort_list - Sorts a doubly linked list of integers
- * in ascending order using the Insertion sort algorithm
- * @list: The doubly linked list to be sorted
- */
+ * in ascending order using the Insertion sort algorithm.
+ * @list: Double pointer to the head of the doubly linked list.
+*/
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *virtual;	
+	listint_t *current;
 
-	if (*list == NULL || list == NULL)
+	if (list == NULL || *list == NULL)
 		return;
 
-	virtual = (*list)->next;
-	while (virtual)
+	current = (*list)->next;
+	while (current != NULL)
 	{
-		while (virtual->prev && virtual->prev->n > virtual->n)
+		while (current->prev != NULL && current->n < current->prev->n)
 		{
-			swap_nodes(list, virtual->prev, virtual);
-			print_list(*list);
+			swap_nodes(list, current);
+			print_list((const listint_t *)*list);
 		}
-		virtual = virtual->next;
+		current = current->next;
 	}
 }
